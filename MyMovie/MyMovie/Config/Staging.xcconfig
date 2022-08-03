@@ -1,0 +1,14 @@
+//
+//  Sandbox.xcconfig
+//  MyMovie
+//
+//  Created by Gia Nguyen on 03/08/2022.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+APP_NAME = MyMovie (Staging)
+APP_VERSION = 1.0
+APP_ID = nhgia.MyMovie.staging
+SERVER_BASE_URL = https:\/\/api.openweathermap.org\/

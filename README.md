@@ -20,9 +20,6 @@ My name is Gia Nguyen. If you have any question or further information, feel fre
 - The structure of the project can be listed as below:
 ```swift
 
-│   ├── Application    // Anything related to the core of the App
-│   │   ├── Base        // Contains AppDelegate (or @main App in SwiftUI)
-.
 ├── MyMovie
 │   ├── Config          // Any client configuration
 │   │   ├── Info.plist
@@ -34,7 +31,7 @@ My name is Gia Nguyen. If you have any question or further information, feel fre
 │   │   ├── CoreData           // CoreData methods
 │   │   ├── Network            // Handle network tasks
 │   ├── ApplicationModules // Any feature will be implemented here
-│   │   ├── Base
+│   │   ├── Base       // Anything related to the core of the App
 │   │   │   ├── AppDelegate
 │   │   │   ├── IB             // Interface builder files 
 │   │   │   └── ViewController // Shared ViewController

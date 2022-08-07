@@ -86,10 +86,7 @@ struct MovieModel: Codable {
         UIApplication.shared.delegate as? AppDelegate else { return }
         let managedContext = appDelegate.persistentContainer.viewContext
         managedContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        
-        /// Init a new Object from Core Data
-        let entity = NSEntityDescription.entity(forEntityName: "MovieItem", in: managedContext)!
-        var movie = NSManagedObject(entity: entity, insertInto: managedContext)
+        var movie = NSManagedObject()
         
         /// Check if there is any existed data in Core Data that has identical trackID
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "MovieItem")
@@ -98,6 +95,11 @@ struct MovieModel: Codable {
         let fetchResults = try? managedContext.fetch(fetchRequest)
         if let item = fetchResults?.first {
             movie = item
+        }
+        else {
+            /// Init a new Object from Core Data
+            let entity = NSEntityDescription.entity(forEntityName: "MovieItem", in: managedContext)!
+            movie = NSManagedObject(entity: entity, insertInto: managedContext)
         }
         
         movie.setValue(artistName, forKeyPath: "artistName")

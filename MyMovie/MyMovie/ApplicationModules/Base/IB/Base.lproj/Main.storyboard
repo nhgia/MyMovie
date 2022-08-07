@@ -120,6 +120,7 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="artworkImage" destination="d6a-l2-q6G" id="iU4-JM-KFa"/>
+                                            <outlet property="detailImage" destination="q9a-D9-r84" id="acR-E3-9EP"/>
                                             <outlet property="favoriteButton" destination="3X4-c8-0nv" id="9MN-T3-MSG"/>
                                             <outlet property="genreLabel" destination="l4A-cr-Boc" id="xjy-pm-GkV"/>
                                             <outlet property="priceLabel" destination="l38-KE-qfx" id="p5W-Jd-nSu"/>

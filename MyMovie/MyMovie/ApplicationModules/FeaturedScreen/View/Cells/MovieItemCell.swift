@@ -14,6 +14,7 @@ class MovieItemCell: UITableViewCell {
     @IBOutlet weak var priceLabel: UILabel!
     @IBOutlet weak var genreLabel: UILabel!
     @IBOutlet weak var favoriteButton: UIButton!
+    @IBOutlet weak var detailImage: UIImageView!
     
     var actionTappedFavoriteButton: ((_ index: IndexPath, _ cell: MovieItemCell) -> Void)?
     var indexPath: IndexPath = IndexPath()
@@ -28,6 +29,14 @@ class MovieItemCell: UITableViewCell {
         let url = URL(string: artworkUrl)
         artworkImage.kf.setImage(with: url, placeholder: UIImage(named: "no-image")!, options: [.cacheOriginalImage], progressBlock: nil, completionHandler: nil)
         trackNameLabel.text = trackName
+        
+        /// Fix unexpected UI position when item not have a title
+        if trackName == nil {
+            detailImage.isHidden = true
+        }
+        else {
+            detailImage.isHidden = false
+        }
         priceLabel.text = price
         genreLabel.text = genre
     }

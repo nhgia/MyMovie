@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Entity" representedClassName="Entity" syncable="YES" codeGenerationType="class"/>
+    <entity name="MovieItem" representedClassName="MovieItem" syncable="YES" codeGenerationType="class">
+        <attribute name="artistName" optional="YES" attributeType="String"/>
+        <attribute name="artworkUrl100" optional="YES" attributeType="String"/>
+        <attribute name="isFavorited" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="longDescription" optional="YES" attributeType="String"/>
+        <attribute name="primaryGenreName" optional="YES" attributeType="String"/>
+        <attribute name="releaseDate" optional="YES" attributeType="String"/>
+        <attribute name="trackID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="trackName" optional="YES" attributeType="String"/>
+        <attribute name="trackPrice" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+    </entity>
     <elements>
-        <element name="Entity" positionX="-63" positionY="-18" width="128" height="29"/>
+        <element name="MovieItem" positionX="-87.47265625" positionY="56.62109375" width="128" height="164"/>
     </elements>
 </model>

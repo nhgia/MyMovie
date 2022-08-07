@@ -13,13 +13,18 @@ class MovieItemCell: UITableViewCell {
     @IBOutlet weak var trackNameLabel: UILabel!
     @IBOutlet weak var priceLabel: UILabel!
     @IBOutlet weak var genreLabel: UILabel!
+    @IBOutlet weak var favoriteButton: UIButton!
+    
+    var actionTappedFavoriteButton: ((_ index: IndexPath, _ cell: MovieItemCell) -> Void)?
+    var indexPath: IndexPath = IndexPath()
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
     
-    func setupViewCell(artworkUrl: String, trackName: String?, price: String?, genre: String?) {
+    func setupViewCell(index: IndexPath, artworkUrl: String, trackName: String?, price: String?, genre: String?) {
+        self.indexPath = index
         let url = URL(string: artworkUrl)
         artworkImage.kf.setImage(with: url, placeholder: UIImage(named: "no-image")!, options: [.cacheOriginalImage], progressBlock: nil, completionHandler: nil)
         trackNameLabel.text = trackName
@@ -36,5 +41,17 @@ class MovieItemCell: UITableViewCell {
         artworkImage.kf.setImage(with: URL(string: ""))
         artworkImage.image = nil
     }
+    
+    func updateFavoriteIcon(isFavorite: Bool) {
+        if isFavorite {
+            self.favoriteButton.setImage(UIImage(named: "star-checked")!, for: .normal)
+        }
+        else {
+            self.favoriteButton.setImage(UIImage(named: "star-uncheck")!, for: .normal)
+        }
+    }
 
+    @IBAction func actionTappedFavorite(_ sender: Any) {
+        actionTappedFavoriteButton?(indexPath, self)
+    }
 }

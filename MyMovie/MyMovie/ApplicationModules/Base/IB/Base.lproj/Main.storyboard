@@ -12,7 +12,6 @@
         <!--Favorite View Controller-->
         <scene sceneID="e51-jF-PUa">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="YxQ-vZ-rB4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="FavoriteViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="P6d-ge-Z3g" customClass="FavoriteViewController" customModule="MyMovie" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="okU-jm-iv3">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
@@ -31,13 +30,13 @@
                     </view>
                     <navigationItem key="navigationItem" id="eid-11-ZdN"/>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YxQ-vZ-rB4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="465" y="104"/>
         </scene>
         <!--Feature View Controller-->
         <scene sceneID="mjN-lI-m5k">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Qmq-hQ-T1J" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="FeatureViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="zAh-oe-pg3" customClass="FeatureViewController" customModule="MyMovie" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ojT-XJ-hPC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
@@ -47,7 +46,7 @@
                                 <rect key="frame" x="0.0" y="139" width="414" height="674"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="MovieItemCell" rowHeight="99" id="e1h-MD-CiG" customClass="MovieItemCell" customModule="MyMovie" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="MovieItemCell" rowHeight="99" id="e1h-MD-CiG" customClass="MovieItemCell" customModule="MyMovie" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="44.5" width="414" height="99"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="e1h-MD-CiG" id="ymR-0V-obF">
@@ -94,6 +93,9 @@
                                                     </constraints>
                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                     <state key="normal" image="star-uncheck"/>
+                                                    <connections>
+                                                        <action selector="actionTappedFavorite:" destination="e1h-MD-CiG" eventType="touchUpInside" id="6wo-LN-CNF"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <constraints>
@@ -118,6 +120,7 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="artworkImage" destination="d6a-l2-q6G" id="iU4-JM-KFa"/>
+                                            <outlet property="favoriteButton" destination="3X4-c8-0nv" id="9MN-T3-MSG"/>
                                             <outlet property="genreLabel" destination="l4A-cr-Boc" id="xjy-pm-GkV"/>
                                             <outlet property="priceLabel" destination="l38-KE-qfx" id="p5W-Jd-nSu"/>
                                             <outlet property="trackNameLabel" destination="8mJ-vj-bsi" id="be8-zM-ogq"/>
@@ -178,6 +181,7 @@
                         <outlet property="tableView" destination="aB3-4Z-roa" id="pC3-9e-q8j"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Qmq-hQ-T1J" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="465.21739130434787" y="-619.41964285714278"/>
         </scene>

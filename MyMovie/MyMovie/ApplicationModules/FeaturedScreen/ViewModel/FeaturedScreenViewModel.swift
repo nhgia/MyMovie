@@ -6,6 +6,10 @@
 //
 
 import Foundation
+import UIKit.UIApplication
+import CoreData
+import Alamofire
+
 final class FeaturedScreenViewModel {
     fileprivate let networkRequest: NetworkRequest<ListMovieModel>
     fileprivate var listMovies: ListMovieModel
@@ -23,14 +27,28 @@ final class FeaturedScreenViewModel {
     
     //MARK: - Network retrieval
     func fetchListMovie(completion: (() -> Void)? = nil) {
-        networkRequest.request(endpoint: NetworkEndpoints.listMovies(searchName: "star")) { [weak self] res in
-            switch res {
-            case .success(let data):
-                self?.listMovies = data
-            case .failure(_):
-                break
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        let managedContext = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "MovieItem")
+        do {
+            let listData = try managedContext.fetch(fetchRequest)
+            if listData.isEmpty {
+                throw CoreDataError.emptyData
             }
+            self.listMovies.results = listData.map({ MovieModel(fromCoreDataObject: $0) })
             completion?()
+        }
+        catch {
+            networkRequest.request(endpoint: NetworkEndpoints.listMovies(searchName: "star")) { [weak self] res in
+                switch res {
+                case .success(let data):
+                    self?.listMovies = data
+                    data.results.forEach({ $0.save() })
+                case .failure(_):
+                    break
+                }
+                completion?()
+            }
         }
     }
     
@@ -44,5 +62,17 @@ final class FeaturedScreenViewModel {
         let price:String? = item.trackPrice != nil ? "Price: \(String(item.trackPrice!))" : nil
         let genre:String = "Genre: " + item.primaryGenreName
         return (true, item.artworkUrl100, item.trackName, price, genre)
+    }
+    
+    func getIsFavorited(atIndex: IndexPath) -> Bool {
+        guard let item = self.listMovies.results[safe: atIndex.row] else { return false }
+        return item.isFavorited
+    }
+    
+    func toggleFavoriteItem(_ atIndex: IndexPath, _ cell: MovieItemCell) {
+        guard self.listMovies.results[safe: atIndex.row] != nil else { return }
+        self.listMovies.results[atIndex.row].isFavorited.toggle()
+        self.listMovies.results[atIndex.row].save()
+        cell.updateFavoriteIcon(isFavorite: self.listMovies.results[atIndex.row].isFavorited)
     }
 }

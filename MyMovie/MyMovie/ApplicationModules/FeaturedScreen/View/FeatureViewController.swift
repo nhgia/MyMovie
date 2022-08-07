@@ -54,7 +54,9 @@ extension FeatureViewController: UITableViewDelegate, UITableViewDataSource {
         let item = viewModel.getItem(atIndex: indexPath)
         guard item.isValidItem else { return UITableViewCell() }
         let cell = tableView.dequeueReusableCell(withIdentifier: "MovieItemCell") as! MovieItemCell
-        cell.setupViewCell(artworkUrl: item.artworkUrl, trackName: item.trackName, price: item.price, genre: item.genre)
+        cell.actionTappedFavoriteButton = viewModel.toggleFavoriteItem(_:_:)
+        cell.setupViewCell(index: indexPath, artworkUrl: item.artworkUrl, trackName: item.trackName, price: item.price, genre: item.genre)
+        cell.updateFavoriteIcon(isFavorite: viewModel.getIsFavorited(atIndex: indexPath))
         return cell
     }
     

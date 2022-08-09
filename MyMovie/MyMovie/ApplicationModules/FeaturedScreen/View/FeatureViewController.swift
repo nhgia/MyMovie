@@ -31,6 +31,7 @@ class FeatureViewController: UIViewController {
     func setupTableView() {
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        self.tableView.register(UINib(nibName: "MovieItemCell", bundle: nil), forCellReuseIdentifier: "MovieItemCell")
     }
     
     func startCallAPI() {

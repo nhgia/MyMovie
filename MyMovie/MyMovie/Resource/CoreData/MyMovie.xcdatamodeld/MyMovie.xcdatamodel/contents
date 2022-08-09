@@ -3,6 +3,7 @@
     <entity name="MovieItem" representedClassName="MovieItem" syncable="YES" codeGenerationType="class">
         <attribute name="artistName" optional="YES" attributeType="String"/>
         <attribute name="artworkUrl100" optional="YES" attributeType="String"/>
+        <attribute name="currency" optional="YES" attributeType="String"/>
         <attribute name="isFavorited" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="longDescription" optional="YES" attributeType="String"/>
         <attribute name="primaryGenreName" optional="YES" attributeType="String"/>
@@ -12,6 +13,6 @@
         <attribute name="trackPrice" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
     <elements>
-        <element name="MovieItem" positionX="-87.47265625" positionY="56.62109375" width="128" height="164"/>
+        <element name="MovieItem" positionX="-87.47265625" positionY="56.62109375" width="128" height="179"/>
     </elements>
 </model>

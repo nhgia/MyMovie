@@ -11,16 +11,16 @@ import CoreData
 import Alamofire
 
 final class FeaturedScreenViewModel {
-    fileprivate let networkRequest: NetworkRequest<ListMovieModel>
+    fileprivate let networkRequest: NetworkRequestProtocol
     fileprivate var listMovies: ListMovieModel
     
     //MARK: - Initialization
     init() {
-        self.networkRequest = NetworkRequest<ListMovieModel>()
+        self.networkRequest = NetworkRequest()
         self.listMovies = ListMovieModel()
     }
     
-    init(networkRequest: NetworkRequest<ListMovieModel>) {
+    init(networkRequest: NetworkRequestProtocol) {
         self.networkRequest = networkRequest
         self.listMovies = ListMovieModel()
     }
@@ -39,7 +39,7 @@ final class FeaturedScreenViewModel {
             completion?()
         }
         catch {
-            networkRequest.request(endpoint: NetworkEndpoints.listMovies(searchName: "star")) { [weak self] res in
+            networkRequest.request(ListMovieModel.self, endpoint: NetworkEndpoints.listMovies(searchName: "star")) { [weak self] res in
                 switch res {
                 case .success(let data):
                     self?.listMovies = data
@@ -59,7 +59,7 @@ final class FeaturedScreenViewModel {
     
     func getItem(atIndex: IndexPath) -> (isValidItem: Bool, artworkUrl: String, trackName: String?, price: String?, genre: String?) {
         guard let item = self.listMovies.results[safe: atIndex.row] else { return (false, "", nil, nil, nil) }
-        let price:String? = item.trackPrice != nil ? "Price: \(String(item.trackPrice!))" : nil
+        let price:String? = item.trackPrice != nil ? "Price: \(item.currency)$\(String(item.trackPrice!))" : nil
         let genre:String = "Genre: " + item.primaryGenreName
         return (true, item.artworkUrl100, item.trackName, price, genre)
     }

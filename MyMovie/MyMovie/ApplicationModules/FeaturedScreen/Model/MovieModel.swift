@@ -71,13 +71,13 @@ struct MovieModel: Codable {
         self.trackID = object.value(forKeyPath: "trackID") as? Int ?? 0
         self.trackName = object.value(forKeyPath: "trackName") as? String
         self.trackPrice = object.value(forKeyPath: "trackPrice") as? Double ?? 0
+        self.currency = object.value(forKeyPath: "currency") as? String ?? ""
         self.wrapperType = ""
         self.previewURL = ""
         self.artworkUrl60 = ""
         self.collectionPrice = 0
         self.collectionExplicitness = ""
         self.country = ""
-        self.currency = ""
         self.primaryGenreName = ""
     }
     
@@ -111,6 +111,7 @@ struct MovieModel: Codable {
         movie.setValue(trackID, forKeyPath: "trackID")
         movie.setValue(trackName, forKeyPath: "trackName")
         movie.setValue(trackPrice, forKeyPath: "trackPrice")
+        movie.setValue(currency, forKeyPath: "currency")
         
         do {
             try managedContext.save()

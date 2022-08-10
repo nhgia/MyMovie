@@ -42,5 +42,7 @@ class DetailScreenViewController: UIViewController {
     }
     
     @IBAction func actionTappedFavoriteIcon(_ sender: Any) {
+        viewModel?.isFavorited.toggle()
+        updateFavoriteIcon()
     }
 }

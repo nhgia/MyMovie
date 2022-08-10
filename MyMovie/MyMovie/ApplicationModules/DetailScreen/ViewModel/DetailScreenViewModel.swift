@@ -35,6 +35,12 @@ class DetailScreenViewModel {
     }
     
     var isFavorited: Bool {
-        movieModel.isFavorited
+        get {
+            movieModel.isFavorited
+        }
+        set {
+            movieModel.isFavorited = newValue
+            movieModel.save(isNeedNotify: true)
+        }
     }
 }

@@ -58,8 +58,8 @@ However, the section below listed how I spend my most productive time for this p
 - **Aug 3rd, 2022:** Read the project's requirements and init XCode project. Brainstorming. Add base files and directory tree **(1 hour of manday)**.
 - **Aug 7th, 2022:** Finished half #1 feature (except for detail screen) **(1 manday)**.
 - **Aug 8th, 2022:** Finished other half of #1 feature **(1 manday)**.
-- **Aug 8th, 2022:** TBD.
-- **Total effort:** 2 mandays and 1 hour.
+- **Aug 10th, 2022:** Add data change notify **(1 manday)**.
+- **Total effort:** 3 mandays and 1 hour.
 
 ### How to run the Application
 1. Please kindly download/clone the repo. <br/>

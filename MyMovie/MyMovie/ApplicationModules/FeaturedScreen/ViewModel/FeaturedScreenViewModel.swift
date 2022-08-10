@@ -10,9 +10,12 @@ import UIKit.UIApplication
 import CoreData
 import Alamofire
 
-final class FeaturedScreenViewModel {
+final class FeaturedScreenViewModel: CoreDataNotification {
+    
     fileprivate let networkRequest: NetworkRequestProtocol
     fileprivate var listMovies: ListMovieModel
+    
+    var notifyViewDataDidChange: ((_ atIndex: IndexPath?) -> Void)?
     
     //MARK: - Initialization
     init() {
@@ -25,8 +28,14 @@ final class FeaturedScreenViewModel {
         self.listMovies = ListMovieModel()
     }
     
+    //MARK: - Register notification
+    func registerNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(localDataDidChange(_:)), name: NSNotification.Name(CoreDataNotificationKeys.coreDataDidChange.rawValue), object: nil)
+    }
+    
+    
     //MARK: - Network retrieval
-    func fetchListMovie(completion: (() -> Void)? = nil) {
+    func fetchListMovie(completion: ((_ atIndex: IndexPath?) -> Void)? = nil) {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let managedContext = appDelegate.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "MovieItem")
@@ -36,19 +45,27 @@ final class FeaturedScreenViewModel {
                 throw CoreDataError.emptyData
             }
             self.listMovies.results = listData.map({ MovieModel(fromCoreDataObject: $0) })
-            completion?()
+            completion?(nil)
         }
         catch {
             networkRequest.request(ListMovieModel.self, endpoint: NetworkEndpoints.listMovies(searchName: "star")) { [weak self] res in
                 switch res {
                 case .success(let data):
                     self?.listMovies = data
-                    data.results.forEach({ $0.save() })
+                    data.results.forEach({ $0.save(isNeedNotify: false) })
                 case .failure(_):
                     break
                 }
-                completion?()
+                completion?(nil)
             }
+        }
+    }
+    
+    @objc func localDataDidChange(_ notification: Notification) {
+        guard let movieModelItem = notification.userInfo?["MovieModel"] as? MovieModel else { return }
+        if let itemIndex = listMovies.results.firstIndex(where: { $0.trackID == movieModelItem.trackID }) {
+            listMovies.results[itemIndex] = movieModelItem
+            notifyViewDataDidChange?(IndexPath(row: itemIndex, section: 0))
         }
     }
     
@@ -72,7 +89,17 @@ final class FeaturedScreenViewModel {
     func toggleFavoriteItem(_ atIndex: IndexPath, _ cell: MovieItemCell) {
         guard self.listMovies.results[safe: atIndex.row] != nil else { return }
         self.listMovies.results[atIndex.row].isFavorited.toggle()
-        self.listMovies.results[atIndex.row].save()
+        self.listMovies.results[atIndex.row].save(isNeedNotify: true)
         cell.updateFavoriteIcon(isFavorite: self.listMovies.results[atIndex.row].isFavorited)
+    }
+    
+    func getItemDetailViewModel(atIndex: IndexPath) -> DetailScreenViewModel? {
+        guard let item = self.listMovies.results[safe: atIndex.row] else { return nil }
+        return DetailScreenViewModel(model: item)
+    }
+    
+    //MARK: - Deinit
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(CoreDataNotificationKeys.coreDataDidChange.rawValue), object: nil)
     }
 }

@@ -24,8 +24,20 @@ class FeatureViewController: UIViewController {
         self.loadingIndicatorView.layer.cornerRadius = 8.0
         self.loadingIndicatorView.isHidden = false
         self.loadingIndicator.startAnimating()
+        setupViewModel()
         setupTableView()
         startCallAPI()
+    }
+    
+    func setupViewModel() {
+        viewModel.registerNotification()
+        viewModel.notifyViewDataDidChange = { [weak self] ind in
+            guard let ind = ind else {
+                self?.tableView.reloadData()
+                return
+            }
+            self?.tableView.reloadRows(at: [ind], with: .automatic)
+        }
     }
     
     func setupTableView() {
@@ -35,9 +47,11 @@ class FeatureViewController: UIViewController {
     }
     
     func startCallAPI() {
-        viewModel.fetchListMovie { [weak self] in
+        viewModel.fetchListMovie { [weak self] _ in
             self?.tableView.reloadData()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            
+            /// Add a 0.5 delay to simulate loading process
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
                 self?.loadingIndicatorView.isHidden = true
                 self?.loadingIndicator.stopAnimating()
             }
@@ -63,6 +77,12 @@ extension FeatureViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 144.0
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DetailScreenViewController") as! DetailScreenViewController
+        vc.viewModel = viewModel.getItemDetailViewModel(atIndex: indexPath)
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
 }

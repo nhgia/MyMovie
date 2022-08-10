@@ -78,10 +78,9 @@ struct MovieModel: Codable {
         self.collectionPrice = 0
         self.collectionExplicitness = ""
         self.country = ""
-        self.primaryGenreName = ""
     }
     
-    func save() {
+    func save(isNeedNotify: Bool) {
         guard let trackID = trackID, let appDelegate =
         UIApplication.shared.delegate as? AppDelegate else { return }
         let managedContext = appDelegate.persistentContainer.viewContext
@@ -115,6 +114,10 @@ struct MovieModel: Codable {
         
         do {
             try managedContext.save()
+            if isNeedNotify {
+                NotificationCenter.default.post(name: NSNotification.Name(CoreDataNotificationKeys.coreDataDidChange.rawValue), object: nil, userInfo: ["MovieModel": self])
+            }
+            
         }
         catch let error as NSError {
             print("Could not save. \(error), \(error.userInfo)")

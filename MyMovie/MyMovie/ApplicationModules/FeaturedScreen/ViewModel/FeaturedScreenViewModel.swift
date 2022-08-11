@@ -15,6 +15,7 @@ final class FeaturedScreenViewModel: CoreDataNotification {
     fileprivate let networkRequest: NetworkRequestProtocol
     fileprivate var listMovies: ListMovieModel
     fileprivate var listMoviesFiltered: [MovieModel]
+    fileprivate var fetchInfo: FetchInfoModel = FetchInfoModel()
     
     var notifyViewDataDidChange: ((_ atIndex: IndexPath?) -> Void)?
     
@@ -39,28 +40,49 @@ final class FeaturedScreenViewModel: CoreDataNotification {
     
     //MARK: - Network retrieval
     func fetchListMovie(completion: ((_ atIndex: IndexPath?) -> Void)? = nil) {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        let managedContext = appDelegate.persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "MovieItem")
-        do {
-            let listData = try managedContext.fetch(fetchRequest)
-            if listData.isEmpty {
-                throw CoreDataError.emptyData
-            }
-            self.listMovies.results = listData.map({ MovieModel(fromCoreDataObject: $0) })
-            self.listMoviesFiltered = self.listMovies.results
-            completion?(nil)
-        }
-        catch {
-            networkRequest.request(ListMovieModel.self, endpoint: NetworkEndpoints.listMovies(searchName: "star")) { [weak self] res in
-                switch res {
-                case .success(let data):
-                    self?.listMovies = data
-                    data.results.forEach({ $0.save(isNeedNotify: false) })
-                case .failure(_):
-                    break
+        networkRequest.request(ListMovieModel.self, endpoint: NetworkEndpoints.listMovies(searchName: "star")) { [weak self] res in
+            switch res {
+            case .success(let data):
+                var fetchItem = FetchInfoModel()
+                fetchItem.previousFetchTime = Date().timeIntervalSince1970
+                fetchItem.save(isNeedNotify: false)
+                self?.listMovies = data
+                for i in 0..<(self?.listMovies.results.count ?? 0) {
+                    guard let trackID = self?.listMovies.results[i].trackID, let appDelegate =
+                    UIApplication.shared.delegate as? AppDelegate else { return }
+                    let managedContext = appDelegate.persistentContainer.viewContext
+                    managedContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+                    var movie = NSManagedObject()
+                    
+                    /// Check if there is any existed data in Core Data that has identical trackID
+                    let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "MovieItem")
+                    fetchRequest.predicate = NSPredicate(format: "trackID = %d", trackID)
+                    
+                    let fetchResults = try? managedContext.fetch(fetchRequest)
+                    if let item = fetchResults?.first {
+                        movie = item
+                    }
+                    self?.listMovies.results[i].isFavorited = movie.value(forKeyPath: "isFavorited") as? Bool ?? false
+                    self?.listMovies.results[i].save(isNeedNotify: false, isExemptFavorited: true)
                 }
+                self?.listMoviesFiltered = self?.listMovies.results ?? []
                 completion?(nil)
+            case .failure(_):
+                guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+                let managedContext = appDelegate.persistentContainer.viewContext
+                let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "MovieItem")
+                do {
+                    let listData = try managedContext.fetch(fetchRequest)
+                    if listData.isEmpty {
+                        throw CoreDataError.emptyData
+                    }
+                    self?.listMovies.results = listData.map({ MovieModel(fromCoreDataObject: $0) })
+                    self?.listMoviesFiltered = self?.listMovies.results ?? []
+                    completion?(nil)
+                }
+                catch {
+                    
+                }
             }
         }
     }
@@ -80,6 +102,13 @@ final class FeaturedScreenViewModel: CoreDataNotification {
     //MARK: - Attributes for view
     var totalItem: Int {
         self.listMoviesFiltered.count
+    }
+    
+    var lastTimeVisited: String {
+        let date = Date(timeIntervalSince1970: fetchInfo.previousFetchTime)
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd-MM-yyyy HH:mm:ss"
+        return "Last visited: \(formatter.string(from: date as Date))"
     }
     
     func getItem(atIndex: IndexPath) -> (isValidItem: Bool, artworkUrl: String, trackName: String?, price: String?, genre: String?) {

@@ -9,7 +9,7 @@ import Foundation
 import CoreData
 import UIKit.UIApplication
 
-struct MovieModel: Codable {
+struct MovieModel: Codable, ModelPersistence {
     var wrapperType: String
     var kind: String?
     var collectionID, trackID: Int?
@@ -81,6 +81,10 @@ struct MovieModel: Codable {
     }
     
     func save(isNeedNotify: Bool) {
+        save(isNeedNotify: isNeedNotify, isExemptFavorited: false)
+    }
+    
+    func save(isNeedNotify: Bool, isExemptFavorited: Bool) {
         guard let trackID = trackID, let appDelegate =
         UIApplication.shared.delegate as? AppDelegate else { return }
         let managedContext = appDelegate.persistentContainer.viewContext
@@ -103,7 +107,9 @@ struct MovieModel: Codable {
         
         movie.setValue(artistName, forKeyPath: "artistName")
         movie.setValue(artworkUrl100, forKeyPath: "artworkUrl100")
-        movie.setValue(isFavorited, forKeyPath: "isFavorited")
+        if !isExemptFavorited {
+            movie.setValue(isFavorited, forKeyPath: "isFavorited")
+        }
         movie.setValue(longDescription, forKeyPath: "longDescription")
         movie.setValue(primaryGenreName, forKeyPath: "primaryGenreName")
         movie.setValue(releaseDate, forKeyPath: "releaseDate")
@@ -132,7 +138,7 @@ struct MovieModel: Codable {
         
         /// Check if there is any existed data in Core Data that has identical trackID
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "MovieItem")
-        fetchRequest.predicate = NSPredicate(format: "trackID = %@", trackID)
+        fetchRequest.predicate = NSPredicate(format: "trackID = %d", trackID)
         
         let fetchResults = try? managedContext.fetch(fetchRequest)
         if let item = fetchResults?.first {

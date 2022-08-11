@@ -90,11 +90,17 @@ extension FeatureViewController: UITableViewDelegate, UITableViewDataSource {
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return viewModel.lastTimeVisited
+    }
+    
 }
 
 //MARK: - UISearchBar
 extension FeatureViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        /// Add cancelable action (in case for call API search)
         NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(reloadSearch(_:)), object: searchBar)
         perform(#selector(self.reloadSearch(_:)), with: searchBar, afterDelay: 0.75)
     }

@@ -14,6 +14,7 @@ final class FeaturedScreenViewModel: CoreDataNotification {
     
     fileprivate let networkRequest: NetworkRequestProtocol
     fileprivate var listMovies: ListMovieModel
+    fileprivate var listMoviesFiltered: [MovieModel]
     
     var notifyViewDataDidChange: ((_ atIndex: IndexPath?) -> Void)?
     
@@ -21,11 +22,13 @@ final class FeaturedScreenViewModel: CoreDataNotification {
     init() {
         self.networkRequest = NetworkRequest()
         self.listMovies = ListMovieModel()
+        self.listMoviesFiltered = []
     }
     
     init(networkRequest: NetworkRequestProtocol) {
         self.networkRequest = networkRequest
         self.listMovies = ListMovieModel()
+        self.listMoviesFiltered = []
     }
     
     //MARK: - Register notification
@@ -45,6 +48,7 @@ final class FeaturedScreenViewModel: CoreDataNotification {
                 throw CoreDataError.emptyData
             }
             self.listMovies.results = listData.map({ MovieModel(fromCoreDataObject: $0) })
+            self.listMoviesFiltered = self.listMovies.results
             completion?(nil)
         }
         catch {
@@ -65,37 +69,53 @@ final class FeaturedScreenViewModel: CoreDataNotification {
         guard let movieModelItem = notification.userInfo?["MovieModel"] as? MovieModel else { return }
         if let itemIndex = listMovies.results.firstIndex(where: { $0.trackID == movieModelItem.trackID }) {
             listMovies.results[itemIndex] = movieModelItem
+        }
+        
+        if let itemIndex = listMoviesFiltered.firstIndex(where: { $0.trackID == movieModelItem.trackID }) {
+            listMoviesFiltered[itemIndex] = movieModelItem
             notifyViewDataDidChange?(IndexPath(row: itemIndex, section: 0))
         }
     }
     
     //MARK: - Attributes for view
     var totalItem: Int {
-        self.listMovies.results.count
+        self.listMoviesFiltered.count
     }
     
     func getItem(atIndex: IndexPath) -> (isValidItem: Bool, artworkUrl: String, trackName: String?, price: String?, genre: String?) {
-        guard let item = self.listMovies.results[safe: atIndex.row] else { return (false, "", nil, nil, nil) }
+        guard let item = self.listMoviesFiltered[safe: atIndex.row] else { return (false, "", nil, nil, nil) }
         let price:String? = item.trackPrice != nil ? "Price: \(item.currency)$\(String(item.trackPrice!))" : nil
         let genre:String = "Genre: " + item.primaryGenreName
         return (true, item.artworkUrl100, item.trackName, price, genre)
     }
     
     func getIsFavorited(atIndex: IndexPath) -> Bool {
-        guard let item = self.listMovies.results[safe: atIndex.row] else { return false }
+        guard let item = self.listMoviesFiltered[safe: atIndex.row] else { return false }
         return item.isFavorited
     }
     
     func toggleFavoriteItem(_ atIndex: IndexPath, _ cell: MovieItemCell) {
-        guard self.listMovies.results[safe: atIndex.row] != nil else { return }
-        self.listMovies.results[atIndex.row].isFavorited.toggle()
-        self.listMovies.results[atIndex.row].save(isNeedNotify: true)
-        cell.updateFavoriteIcon(isFavorite: self.listMovies.results[atIndex.row].isFavorited)
+        guard self.listMoviesFiltered[safe: atIndex.row] != nil else { return }
+        self.listMoviesFiltered[atIndex.row].isFavorited.toggle()
+        self.listMoviesFiltered[atIndex.row].save(isNeedNotify: true)
+        cell.updateFavoriteIcon(isFavorite: self.listMoviesFiltered[atIndex.row].isFavorited)
     }
     
     func getItemDetailViewModel(atIndex: IndexPath) -> DetailScreenViewModel? {
-        guard let item = self.listMovies.results[safe: atIndex.row] else { return nil }
+        guard let item = self.listMoviesFiltered[safe: atIndex.row] else { return nil }
         return DetailScreenViewModel(model: item)
+    }
+    
+    //MARK: Search related
+    func resetSearch() {
+        self.listMoviesFiltered.removeAll()
+        self.listMoviesFiltered = self.listMovies.results
+        notifyViewDataDidChange?(nil)
+    }
+    
+    func filterItem(byKeyword key: String) {
+        self.listMoviesFiltered = self.listMovies.results.filter({ $0.trackName?.lowercased().contains(key.lowercased()) == true })
+        notifyViewDataDidChange?(nil)
     }
     
     //MARK: - Deinit

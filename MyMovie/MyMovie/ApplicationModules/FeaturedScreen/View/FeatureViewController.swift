@@ -18,14 +18,12 @@ class FeatureViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "MyMovie"
-        self.searchBar.showsCancelButton = true
-        self.searchBar.layer.borderWidth = 1
-        self.searchBar.layer.borderColor = UIColor.clear.cgColor
         self.loadingIndicatorView.layer.cornerRadius = 8.0
         self.loadingIndicatorView.isHidden = false
         self.loadingIndicator.startAnimating()
         setupViewModel()
         setupTableView()
+        setupSearchBar()
         startCallAPI()
     }
     
@@ -44,6 +42,13 @@ class FeatureViewController: UIViewController {
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.register(UINib(nibName: "MovieItemCell", bundle: nil), forCellReuseIdentifier: "MovieItemCell")
+    }
+    
+    func setupSearchBar() {
+        self.searchBar.showsCancelButton = false
+        self.searchBar.layer.borderWidth = 1
+        self.searchBar.layer.borderColor = UIColor.clear.cgColor
+        self.searchBar.delegate = self
     }
     
     func startCallAPI() {
@@ -85,4 +90,39 @@ extension FeatureViewController: UITableViewDelegate, UITableViewDataSource {
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
+}
+
+//MARK: - UISearchBar
+extension FeatureViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(reloadSearch(_:)), object: searchBar)
+        perform(#selector(self.reloadSearch(_:)), with: searchBar, afterDelay: 0.75)
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(false, animated: true)
+        searchBar.resignFirstResponder() 
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(true, animated: true)
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(false, animated: true)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(false, animated: true)
+        searchBar.resignFirstResponder()
+    }
+    
+    @objc func reloadSearch(_ searchBar: UISearchBar) {
+        guard let query = searchBar.text, query.trimmingCharacters(in: .whitespaces) != "" else {
+            viewModel.resetSearch()
+            return
+        }
+        
+        viewModel.filterItem(byKeyword: query)
+    }
 }

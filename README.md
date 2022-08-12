@@ -49,6 +49,14 @@ My name is Gia Nguyen. If you have any question or further information, feel fre
 
 ```
 
+### Persistence
+This app uses Core Data to store persistant data. 
+The data schema is designed as below
+<center><img width="70%" src="https://user-images.githubusercontent.com/40845574/184281888-906c92ba-f015-4789-a7ab-b5e9a97b1bdb.png"></center> 
+
+- **FetchInfo:** Store the previous time visited by user.
+- **MovieItem:** Store each item of movie retrieved from iTunes API.  
+
 ### Timelines
 I have done this project NOT in consecutive days due to current job's tasks.
 
@@ -59,7 +67,8 @@ However, the section below listed how I spend my most productive time for this p
 - **Aug 7th, 2022:** Finished half #1 feature (except for detail screen) **(1 manday)**.
 - **Aug 8th, 2022:** Finished other half of #1 feature **(1 manday)**.
 - **Aug 10th, 2022:** Add data change notify **(1 manday)**.
-- **Total effort:** 3 mandays and 1 hour.
+- **Aug 12th, 2022:** Add #2 feature and finalize the app **(1 manday)**.
+- **Total effort:** 4 mandays and 1 hour.
 
 ### How to run the Application
 1. Please kindly download/clone the repo. <br/>
@@ -70,9 +79,15 @@ However, the section below listed how I spend my most productive time for this p
 
 ### Screenshots
 <p align="center">
-    <img width="24%" src="">
-    <img width="24%" src="">
-    <img width="24%" src="">
-    <img width="24%" src="">
+    <img width="24%" src="https://user-images.githubusercontent.com/40845574/184281743-13e57f13-c6cc-4ad1-a62e-5f642e31a2cb.png">
+    <img width="24%" src="https://user-images.githubusercontent.com/40845574/184284305-9943779c-9907-4b18-8412-afc09a6228c3.png">
+    <img width="24%" src="https://user-images.githubusercontent.com/40845574/184281764-6f257b4a-5dbe-4180-8521-cbbb42954a96.png">
+    <img width="24%" src="https://user-images.githubusercontent.com/40845574/184281765-11a79918-8dea-41c0-854b-7c5bf7fe4785.png">
+</p>
 
+<p align="center">
+    <img width="24%" src="https://user-images.githubusercontent.com/40845574/184281760-6d76361e-deb3-4a8c-a957-a179419d520a.png">
+    <img width="24%" src="https://user-images.githubusercontent.com/40845574/184281759-598dbc9c-df0f-4e3c-a282-64a17f6768ff.png">
+    <img width="24%" src="https://user-images.githubusercontent.com/40845574/184281753-a4371144-0af7-4c13-9bf3-a225d15637d4.png">
+    <img width="24%" src="https://user-images.githubusercontent.com/40845574/184283734-702ab53d-71bd-4f1f-8776-3d444236f67b.png">
 </p>
